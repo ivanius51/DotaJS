@@ -85,13 +85,13 @@ function AutoDenyFunc(){
 	}		
 }
 
-function CreateFollowParticle(time,particlepath,someobj,ent){
-	if(z.indexOf(ent)!=-1)
+function CreateFollowParticle(time,particlepath,someobj){
+	if(z.indexOf(someobj)!=-1)
 		return
 	var p = Particles.CreateParticle(particlepath, ParticleAttachment_t.PATTACH_OVERHEAD_FOLLOW, someobj)
 	Particles.SetParticleControl(p, 0,  0)
-	z.push(ent)
-	$.Schedule(time+0.1,function(){ Particles.DestroyParticleEffect(p,p); z.splice(z.indexOf(ent),1); })
+	z.push(someobj)
+	$.Schedule(time+0.1,function(){ Particles.DestroyParticleEffect(p,p); z.splice(z.indexOf(someobj),1); })
 }
 
 var AutoDenyOnCheckBoxClick = function(){
