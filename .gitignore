@@ -1,0 +1,4 @@
+### NotepadPP ###
+# Notepad++ backups #
+nppBackup\
+*.bak
