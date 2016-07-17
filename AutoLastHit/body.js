@@ -25,9 +25,9 @@ Game.CreepsList = function(){
 	return CreepsEnt
 }
 
-function AutoDenyFunc(){
+function LastHitCreepFunc(){
 	//проверяем включен ли скрипт в панели
-	if ( !AutoDeny.checked )
+	if ( !LastHitCreep.checked )
 		return
 	//получаем свой указатель
 	var User = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
@@ -94,23 +94,23 @@ function CreateFollowParticle(time,particlepath,someobj){
 	$.Schedule(time+0.1,function(){ Particles.DestroyParticleEffect(p,p); z.splice(z.indexOf(someobj),1); })
 }
 
-var AutoDenyOnCheckBoxClick = function(){
-	if ( !AutoDeny.checked ){
-		Game.ScriptLogMsg('Script disabled: AutoDeny By Ivanius51', '#ff0000')
+var LastHitCreepOnCheckBoxClick = function(){
+	if ( !LastHitCreep.checked ){
+		Game.ScriptLogMsg('Script disabled: LastHitCreep By Ivanius51', '#ff0000')
 		return
 	}
 	//циклически замкнутый таймер с проверкой условия с интервалом 'interval'
 	function maincheck(){ $.Schedule( interval,function(){
-		AutoDenyFunc()
-		if(AutoDeny.checked)
+		LastHitCreepFunc()
+		if(LastHitCreep.checked)
 			maincheck()
 	})}
 	maincheck()
-	Game.ScriptLogMsg('Script enabled: AutoDeny By Ivanius51', '#00ff00')
+	Game.ScriptLogMsg('Script enabled: LastHitCreep By Ivanius51', '#00ff00')
 }
 
 //шаблонное добавление чекбокса в панель
-var Temp = $.CreatePanel( "Panel", $('#scripts'), "AutoDeny" )
-Temp.SetPanelEvent( 'onactivate', AutoDenyOnCheckBoxClick )
-Temp.BLoadLayoutFromString( '<root><styles><include src="s2r://panorama/styles/dotastyles.vcss_c" /><include src="s2r://panorama/styles/magadan.vcss_c" /></styles><Panel><ToggleButton class="CheckBox" id="AutoDeny" text="AutoDeny"/></Panel></root>', false, false)  
-var AutoDeny = $.GetContextPanel().FindChildTraverse( 'AutoDeny' ).Children()[0]
+var Temp = $.CreatePanel( "Panel", $('#scripts'), "LastHitCreep" )
+Temp.SetPanelEvent( 'onactivate', LastHitCreepOnCheckBoxClick )
+Temp.BLoadLayoutFromString( '<root><styles><include src="s2r://panorama/styles/dotastyles.vcss_c" /><include src="s2r://panorama/styles/magadan.vcss_c" /></styles><Panel><ToggleButton class="CheckBox" id="LastHitCreep" text="LastHitCreep"/></Panel></root>', false, false)  
+var LastHitCreep = $.GetContextPanel().FindChildTraverse( 'LastHitCreep' ).Children()[0]
