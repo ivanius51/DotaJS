@@ -1,12 +1,13 @@
 ﻿//Ivanius51 13.07.2016 АвтоДенай крипов + подсвечивание
 
+destroy()
 //интервал(в секундах) через который будет делаться проверка
 var interval = 0.1
 //debugg
 var debug = true
-
+Game.Particles.LastHitCreep = []
 var z = []
-
+var Range = 0
 var CurCreep = 0
 
 //DmgMultimler
@@ -25,6 +26,13 @@ Game.CreepsList = function(){
 	return CreepsEnt
 }
 
+function destroy()
+{
+	for(i in Game.Particles.LastHitCreep)
+	try{ Particles.DestroyParticleEffect(Game.Particles.LastHitCreep[i],Game.Particles.LastHitCreep[i]) }catch(e){}
+	Range=0
+}
+
 function LastHitCreepFunc(){
 	//проверяем включен ли скрипт в панели
 	if ( !LastHitCreep.checked )
@@ -37,6 +45,14 @@ function LastHitCreepFunc(){
 		UserDmg = Entities.GetDamageMin(User)
 	else
 		UserDmg = Entities.GetDamageMax(User)*/
+	
+	if ((Range==0)||(Range!=Entities.GetAttackRange(User)))
+	{
+		destroy()
+		Game.Particles.LastHitCreep[0] = Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW , User)
+		Range = Entities.GetAttackRange(User)
+		Particles.SetParticleControl(Game.Particles.LastHitCreep[0], 1,  [Range,0,0])
+	}
 	
 	UserDmg = (Entities.GetDamageMax(User)-Entities.GetDamageMin(User))/2
 	UserDmg += Entities.GetDamageMin(User)
@@ -73,7 +89,7 @@ function LastHitCreepFunc(){
 		if ((Entities.IsAlive(Creeps[icreep]))&&(Entities.IsEntityInRange(Creeps[icreep],User,800))&&
 				((((UserDmg*MulDmg)>=(Entities.GetHealth(Creeps[icreep])*CreepArmor))&&(Entities.IsEnemy(Creeps[icreep])))||(UserDmg>=(Entities.GetHealth(Creeps[icreep])*CreepArmor))))
 		{
-			if ((Entities.IsEnemy(Creeps[icreep]))&&((Entities.IsEntityInRange(Creeps[icreep],User,Entities.GetAttackRange(User)))||(Entities.IsEntityInRange(Creeps[icreep],User,250))))
+			if ((Entities.IsEnemy(Creeps[icreep]))&&((Entities.IsEntityInRange(Creeps[icreep],User,Range))||(Entities.IsEntityInRange(Creeps[icreep],User,250))))
 			{
 				Game.AttackTarget(User,Creeps[icreep],0)	
 				CurCreep = Creeps[icreep]
@@ -97,8 +113,9 @@ function CreateFollowParticle(time,particlepath,someobj){
 var LastHitCreepOnCheckBoxClick = function(){
 	if ( !LastHitCreep.checked ){
 		Game.ScriptLogMsg('Script disabled: LastHitCreep By Ivanius51', '#ff0000')
+		destroy()
 		return
-	}
+	}	
 	//циклически замкнутый таймер с проверкой условия с интервалом 'interval'
 	function maincheck(){ $.Schedule( interval,function(){
 		LastHitCreepFunc()
